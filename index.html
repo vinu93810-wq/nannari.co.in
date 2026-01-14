@@ -464,7 +464,7 @@
   </div>
 </nav>
 
-<!-- Floating marquee placed in its own section, right after nav -->
+<!-- Floating marquee placed in its own section -->
 <section class="floating-marquee-section">
   <div class="premium-marquee-container">
     <div class="marquee-content">
@@ -747,10 +747,19 @@ sizeCards.forEach(card=>{
 qtyInput.addEventListener("input",updateTotal);
 
 function updateTotal(){
-  const qty=Math.max(1,qtyInput.value);
-  qtyInput.value=qty;
-  btn.innerText=`Rs. ${qty*selectedPrice} | ADD TO CART`;
+  let qty = parseInt(qtyInput.value);
+  if (isNaN(qty)) {
+    qty = 0;
+  }
+  btn.innerText = `Rs. ${qty * selectedPrice} | ADD TO CART`;
 }
+
+qtyInput.addEventListener("blur", () => {
+  if (qtyInput.value === "" || parseInt(qtyInput.value) < 1) {
+    qtyInput.value = 1;
+    updateTotal();
+  }
+});
 
 btn.addEventListener("click",()=>{
   localStorage.setItem("order_qty",qtyInput.value);
@@ -800,20 +809,7 @@ if (cartIcon) {
         window.location.href = "checkout.html";
     };
 }
-btn.addEventListener("click", () => {
-    const qty = parseInt(qtyInput.value) || 1;
-    
-    // Pata count ki kotha quantity add cheyadam
-    let currentTotalItems = parseInt(localStorage.getItem("cart_total_items") || 0);
-    localStorage.setItem("cart_total_items", currentTotalItems + qty);
-    
-    // Badge update chesi checkout ki velladam
-    updateCartBadge();
-    window.location.href = "checkout.html";
-});
-
-// Init on load
-updateCartBadge();</script>
+</script>
 </body>
 </html>
 
